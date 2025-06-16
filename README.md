@@ -29,6 +29,11 @@ https://github.com/user-attachments/assets/0b875261-403e-4f26-b527-d68e3d111974
 | <kbd>q</kbd>                                                 | Диалог конфигурации  |
 | <kbd>Esc</kbd>                                               | Закрыть диалоги      |
 
+## ⚙️ Настройка Firefox
+1. **Перейдите в `about:debugging`** → **"This Firefox"** → **"Load Temporary Add-on"**.  
+2. **Выберите файл `manifest.json`** из вашей папки с расширением.  
+   *После этого расширение установится, и новая вкладка всегда будет этой автоматически.*
+
 ## ⚙️ Диалог конфигурации
 
 ![firefox_axpy9RnarK](https://github.com/user-attachments/assets/d4698078-16b5-4bb2-aefe-9c072382241a)
