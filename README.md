@@ -29,6 +29,12 @@ https://github.com/user-attachments/assets/0b875261-403e-4f26-b527-d68e3d111974
 | <kbd>q</kbd>                                                 | Диалог конфигурации  |
 | <kbd>Esc</kbd>                                               | Закрыть диалоги      |
 
+## ⚙️ Настройка Firefox
+1. закинуть в автозагрузку webserver_starter.bat (только ярлык старта) и в первый раз запустить файл, тк автозапуск только при входе в систему
+2. Подключите разширение "New Tab Override"
+3. Там вставьте "http://127.0.0.1:9990/"
+4. В path добавить папку "php"
+
 ## ⚙️ Диалог конфигурации
 
 ![firefox_axpy9RnarK](https://github.com/user-attachments/assets/d4698078-16b5-4bb2-aefe-9c072382241a)

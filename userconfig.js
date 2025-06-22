@@ -117,7 +117,7 @@ const default_config = {
             },
             {
               name: "deepseek",
-              url: "https://www.deepseek.com/",
+              url: "https://chat.deepseek.com",
               icon: "brain",
               icon_color: "#a9b665",
             },
