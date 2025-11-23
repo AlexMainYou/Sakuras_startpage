@@ -47,12 +47,10 @@ class Category extends Component {
   }
 
   static getBackgroundStyle(url) {
-    // Оригинальная функция, которая работает. Не меняем её.
     return `style="background-image: url(${url}); background-repeat: no-repeat;background-size: contain;"`;
   }
 
   static getAll(tabs) {
-    // Оригинальная структура, которая работает. Не меняем её.
     return `
       ${
       tabs.map(({ name, background_url }, index) => {
@@ -125,6 +123,16 @@ class Tabs extends Component {
           overflow: hidden;
           position: relative;
           border-radius: 10px 0 0 10px;
+          display: flex;
+          flex-direction: column;
+      }
+
+      /* Контейнер для контента вкладок, чтобы он был ПОД поиском */
+      .tabs-container {
+          position: relative;
+          width: 100%;
+          height: calc(100% - 60px); /* Вычитаем высоту поиска */
+          flex-grow: 1;
       }
 
       .categories ul {
@@ -133,64 +141,18 @@ class Tabs extends Component {
           width: 100%;
           height: 100%;
           right: 100%;
-          background: #282828 url("../img/bg-1.gif") repeat left;
-	        transition: all .6s;
-	        # animation: scroll 25s ease-in-out infinite;
+          background: #282828;
+          transition: all .6s;
+          position: absolute;
+          top: 0;
       }
 
-      @keyframes scroll {
-          50% {
-              background-position-x: -240px;
-          }
-      }
-
-      .categories ul:nth-child(2) {
-          --flavour: #e78a4e;
-      }
-
-      .categories ul:nth-child(3) {
-          --flavour: #ea6962;
-      }
-
-      .categories ul:nth-child(4) {
-          --flavour: #7daea3;
-      }
-
-      .categories ul:nth-child(5) {
-          --flavour: #d3869b;
-      }
-
-      .categories ul:nth-child(6) {
-          --flavour: #d3869b;
-      }
-
-      .categories ul:nth-child(7) {
-          --flavour: #a9b665;
-      }
-
-      .categories ul:nth-child(8) {
-          --flavour: #e78a4e;
-      }
-
-      .categories ul:nth-child(9) {
-          --flavour: #ea6962;
-      }
-
-      .categories ul:nth-child(10) {
-          --flavour: #7daea3;
-      }
-
-      .categories ul:nth-child(11) {
-          --flavour: #d3869b;
-      }
-
-      .categories ul:nth-child(12) {
-          --flavour: #d3869b;
-      }
-
-      .categories ul .links {
-          box-shadow: inset -1px 0 var(--flavour);
-      }
+      .categories ul:nth-child(2) { --flavour: #e78a4e; }
+      .categories ul:nth-child(3) { --flavour: #ea6962; }
+      .categories ul:nth-child(4) { --flavour: #7daea3; }
+      .categories ul:nth-child(5) { --flavour: #d3869b; }
+      .categories ul:nth-child(6) { --flavour: #d3869b; }
+      /* ... остальные цвета по желанию ... */
 
       .categories ul[active] {
           right: 0;
@@ -202,9 +164,13 @@ class Tabs extends Component {
           width: 70%;
           height: 100%;
           background: #282828;
-          padding: 5%;
+          padding: 3% 5%; /* Чуть меньше отступ сверху */
           flex-wrap: wrap;
+          overflow-y: auto; /* Добавляем скролл если ссылок много */
       }
+      
+      /* Скрываем скроллбар для красоты */
+      .categories .links::-webkit-scrollbar { width: 0; }
 
       .categories .links li {
           list-style: none;
@@ -224,7 +190,6 @@ class Tabs extends Component {
           margin-bottom: .7em;
       }
       
-      /* ИЗМЕНЕНИЕ 1: Добавляем стиль для русских названий ссылок */
       .categories .link-name {
           font-family: 'Montserrat', sans-serif;
           font-weight: 600;
@@ -249,11 +214,8 @@ class Tabs extends Component {
           text-transform: uppercase;
           overflow-wrap: break-word;
           width: 25px;
-          /* height: 250px; */ 
           padding: 1em;
           margin: auto;
-          /* border-radius: 5px; */
-          /* box-shadow: inset 0 0 0 2px var(--flavour); */
           left: calc(5% - 42.5px);
           bottom: 0;
           top: 0;
@@ -278,13 +240,12 @@ class Tabs extends Component {
 
       .categories .links li h1 {
           color: #d4be98;
-	        opacity: 0.5;
+          opacity: 0.5;
           font-size: 13px;
           margin-bottom: 1em;
           font-weight: 600;
           letter-spacing: 1px;
           text-transform: uppercase;
-          /* ИЗМЕНЕНИЕ 3: ЗАМЕНА ШРИФТА НА MONTSERRAT */
           font-family: 'Montserrat', sans-serif;
       }
 
@@ -302,21 +263,45 @@ class Tabs extends Component {
           flex-wrap: wrap;
       }
 
+      /* Стили для кнопки Sakurast */
+      .sakura-hub-btn {
+          position: absolute;
+          top: 0;
+          right: -60px; /* Выносим вправо за пределы основного блока */
+          width: 50px;
+          height: 50px;
+          background: #32302f;
+          border-radius: 5px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+          transition: all .2s;
+          text-decoration: none;
+          border: 1px solid transparent;
+      }
+
+      .sakura-hub-btn:hover {
+          background: #282828;
+          border-color: #a9b665;
+          transform: translateY(2px);
+      }
+
+      .sakura-hub-btn i {
+          color: #a9b665; /* Цвет иконки */
+          font-size: 24px;
+      }
+
       .ti {
           animation: fadeInAnimation ease .5s;
           animation-iteration-count: 1;
           animation-fill-mode: forwards;
-          height: 27px;
-          width: 27px;
       }
 
       @keyframes fadeInAnimation {
-          0% {
-              opacity: 0;
-          }
-          100% {
-              opacity: 1;
-           }
+          0% { opacity: 0; }
+          100% { opacity: 1; }
       }
     `;
   }
@@ -324,11 +309,22 @@ class Tabs extends Component {
   template() {
     return `
       <div id="links" class="-">
-
         <div id="panels">
+          
+          <!-- Кнопка Hub вынесена из categories, но привязана к panels -->
+          <a href="https://sakurast.ru" class="sakura-hub-btn" title="Sakurast Hub">
+             <i class="ti ti-cherry-filled"></i> <!-- Иконка вишни, подходит под Sakura -->
+          </a>
+
           <div class="categories">
-            ${Category.getAll(this.tabs)}
+            <!-- Поиск теперь внутри потока, сверху -->
             <search-bar></search-bar>
+            
+            <!-- Контейнер для вкладок -->
+            <div class="tabs-container">
+                ${Category.getAll(this.tabs)}
+            </div>
+            
             <config-tab></config-tab>
           </div>
           <status-bar class="!-"></status-bar>
