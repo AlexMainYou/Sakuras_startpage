@@ -290,7 +290,7 @@ class Tabs extends Component {
 
       .sakura-hub-btn i {
           color: #a9b665; /* Цвет иконки */
-          font-size: 24px;
+          font-size: 25px;
       }
 
       .ti {
