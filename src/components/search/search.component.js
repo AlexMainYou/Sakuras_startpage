@@ -12,21 +12,30 @@ class Search extends Component {
 
   style() {
     return `
+      :host {
+          display: block;
+          width: 100%;
+      }
+
       #search {
           display: flex;
           align-items: center;
           justify-content: center;
           width: 100%;
-          height: 60px; /* Высота панели поиска */
+          height: 52px;
           background: #282828;
           z-index: 20;
           position: relative;
           border-bottom: 1px solid #32302f;
       }
 
-      #search div {
+      #search .search-box {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) 40px;
+          align-items: center;
+          gap: 8px;
           position: relative;
-          width: 90%;
+          width: 100%;
       }
 
       #search input {
@@ -36,9 +45,36 @@ class Search extends Component {
           padding: .5em 0;
           background: none;
           font: 500 18px 'Roboto', sans-serif;
-          letter-spacing: 1px;
+          letter-spacing: 0;
           color: #d4be98;
           text-align: center; /* Центрируем текст */
+      }
+
+      #search button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          border: 1px solid #3c3836;
+          border-radius: 6px;
+          background: #32302f;
+          color: #d4be98;
+          cursor: pointer;
+          transition: border-color .15s ease, color .15s ease, background .15s ease;
+      }
+
+      #search button:hover,
+      #search button:focus {
+          border-color: #e78a4e;
+          color: #e78a4e;
+          background: #3c3836;
+          outline: 0;
+      }
+
+      #search button .material-icons {
+          font-size: 22px;
+          line-height: 1;
       }
 
       #search input::placeholder {
@@ -67,27 +103,35 @@ class Search extends Component {
   template() {
     return `
         <div id="search">
-          <div>
+          <div class="search-box">
             <input type="text" spellcheck="false" placeholder="Что ищем?">
+            <button type="button" title="Искать" aria-label="Искать">
+              <i class="material-icons">search</i>
+            </button>
           </div>
         </div>
     `;
   }
 
-  handleSearch(event) {
-    const { target, key } = event;
+  search(query) {
+    const value = query.trim();
+    if (value) {
+      window.location = this.defaultEngine + encodeURI(value);
+    }
+  }
 
-    // Если нажат Enter, ищем сразу через дефолтный поисковик
-    if (key === 'Enter') {
-      const query = target.value;
-      if (query) {
-        window.location = this.defaultEngine + encodeURI(query);
-      }
+  handleSearch(event) {
+    if (event.key === 'Enter') {
+      this.search(event.target.value);
     }
   }
 
   setEvents() {
-    this.refs.search.onkeyup = (e) => this.handleSearch(e);
+    const input = this.shadow.querySelector('input[type="text"]');
+    const button = this.shadow.querySelector('button');
+
+    input.addEventListener('keyup', (event) => this.handleSearch(event));
+    button.addEventListener('click', () => this.search(input.value));
   }
 
   connectedCallback() {
@@ -95,7 +139,7 @@ class Search extends Component {
       this.setEvents();
       // Автофокус при загрузке
       setTimeout(() => {
-        this.refs.input.focus();
+        this.shadow.querySelector('input[type="text"]').focus();
       }, 200);
     });
   }

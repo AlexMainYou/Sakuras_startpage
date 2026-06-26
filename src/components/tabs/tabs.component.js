@@ -123,16 +123,12 @@ class Tabs extends Component {
           overflow: hidden;
           position: relative;
           border-radius: 10px 0 0 10px;
-          display: flex;
-          flex-direction: column;
       }
 
-      /* Контейнер для контента вкладок, чтобы он был ПОД поиском */
       .tabs-container {
           position: relative;
           width: 100%;
-          height: calc(100% - 60px); /* Вычитаем высоту поиска */
-          flex-grow: 1;
+          height: 100%;
       }
 
       .categories ul {
@@ -161,12 +157,22 @@ class Tabs extends Component {
 
       .categories .links {
           right: 0;
-          width: 70%;
+          width: 75%;
           height: 100%;
           background: #282828;
-          padding: 3% 5%; /* Чуть меньше отступ сверху */
+          box-sizing: border-box;
+          padding: 96px 5% 3%;
           flex-wrap: wrap;
           overflow-y: auto; /* Добавляем скролл если ссылок много */
+      }
+
+      .categories > search-bar {
+          display: block;
+          position: absolute;
+          top: 22px;
+          right: 5%;
+          width: 65%;
+          z-index: 3;
       }
       
       /* Скрываем скроллбар для красоты */
@@ -317,9 +323,8 @@ class Tabs extends Component {
           </a>
 
           <div class="categories">
-            <!-- Поиск теперь внутри потока, сверху -->
             <search-bar></search-bar>
-            
+
             <!-- Контейнер для вкладок -->
             <div class="tabs-container">
                 ${Category.getAll(this.tabs)}
