@@ -30,6 +30,19 @@
     <script type="text/javascript" src="src/common/component.js"></script>
 
     <script type="text/javascript" src="./userconfig.js"></script>
+    <script>
+      (function() {
+        try {
+          var request = new XMLHttpRequest();
+          request.open("GET", "./localconfig.js", false);
+          request.send(null);
+
+          if (request.status >= 200 && request.status < 300) {
+            Function(request.responseText)();
+          }
+        } catch (error) {}
+      })();
+    </script>
 
     <script type="text/javascript" src="src/components/tabs/tabs.component.js"></script>
 

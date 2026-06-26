@@ -269,8 +269,8 @@ class Tabs extends Component {
           flex-wrap: wrap;
       }
 
-      /* Стили для кнопки Sakurast */
-      .sakura-hub-btn {
+      /* Private optional link button */
+      .private-link-btn {
           position: absolute;
           top: 0;
           right: -60px; /* Выносим вправо за пределы основного блока */
@@ -288,13 +288,13 @@ class Tabs extends Component {
           border: 1px solid transparent;
       }
 
-      .sakura-hub-btn:hover {
+      .private-link-btn:hover {
           background: #282828;
           border-color: #a9b665;
           transform: translateY(2px);
       }
 
-      .sakura-hub-btn i {
+      .private-link-btn i {
           color: #a9b665; /* Цвет иконки */
           font-size: 25px;
       }
@@ -312,15 +312,27 @@ class Tabs extends Component {
     `;
   }
 
+  getPrivateLinkButton() {
+    const button = window.LOCAL_CONFIG?.privateButton;
+
+    if (!button?.url) return "";
+
+    const title = button.title ?? "Private link";
+    const icon = button.icon ?? "link";
+    const iconColor = button.iconColor ?? "#a9b665";
+
+    return `
+          <a href="${button.url}" class="private-link-btn" title="${title}">
+             <i class="ti ti-${icon}" style="color: ${iconColor}"></i>
+          </a>
+    `;
+  }
+
   template() {
     return `
       <div id="links" class="-">
         <div id="panels">
-          
-          <!-- Кнопка Hub вынесена из categories, но привязана к panels -->
-          <a href="https://sakurast.ru" class="sakura-hub-btn" title="Sakurast Hub">
-             <i class="ti ti-cherry-filled"></i> <!-- Иконка вишни, подходит под Sakura -->
-          </a>
+          ${this.getPrivateLinkButton()}
 
           <div class="categories">
             <search-bar></search-bar>
