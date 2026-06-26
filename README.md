@@ -20,7 +20,7 @@
 
 ## Превью
 
-https://github.com/user-attachments/assets/0b875261-403e-4f26-b527-d68e3d111974
+<img width="1915" height="993" alt="firefox_v1YwQ9srTp" src="https://github.com/user-attachments/assets/d779e892-4701-4da1-a85e-19c1e625d14c" />
 
 ## Что внутри
 
