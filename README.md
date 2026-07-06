@@ -1,36 +1,19 @@
-<div align="center">
-    <img src="src/img/favico.svg" width="220" alt="Sakura startpage logo"><br>
-    <a href="https://github.com/AlexMainYou/Sakuras_startpage/stargazers">
-        <img src="https://img.shields.io/github/stars/AlexMainYou/Sakuras_startpage?color=a9b665&style=for-the-badge&logo=starship" alt="GitHub stars">
-    </a>
-    <a href="https://github.com/AlexMainYou/Sakuras_startpage/issues">
-        <img src="https://img.shields.io/github/issues/AlexMainYou/Sakuras_startpage?color=ea6962&style=for-the-badge&logo=codecov" alt="GitHub issues">
-    </a>
-    <a href="https://github.com/AlexMainYou/Sakuras_startpage/network/members">
-        <img src="https://img.shields.io/github/forks/AlexMainYou/Sakuras_startpage?color=7daea3&style=for-the-badge&logo=jfrog-bintray" alt="GitHub forks">
-    </a>
-    <a href="https://github.com/AlexMainYou/Sakuras_startpage/blob/main/LICENSE">
-        <img src="https://img.shields.io/badge/license-MIT-orange.svg?color=d4be98&style=for-the-badge&logo=archlinux" alt="MIT license">
-    </a>
-</div>
-
 # Sakuras Startpage
 
-Персональная стартовая страница для браузера: компактная панель с вкладками, постерами, быстрыми ссылками, поиском, часами и погодой. Проект основан на [tartarus-startpage](https://github.com/AllJavi/tartarus-startpage), но адаптирован под личный набор сервисов, русскую раскладку и локальный запуск на Windows.
+Персональная стартовая страница для браузера: одна центральная карточка с тремя вкладками сервисов, поиском, температурой и светящейся обводкой на базе Paper Design Shaders.
 
-## Превью
-
-<img width="1915" height="993" alt="firefox_v1YwQ9srTp" src="https://github.com/user-attachments/assets/d779e892-4701-4da1-a85e-19c1e625d14c" />
+Проект вырос из [tartarus-startpage](https://github.com/AllJavi/tartarus-startpage), но сейчас заточен под локальный запуск на Windows и личный набор ссылок.
 
 ## Что внутри
 
-- Три вкладки с постерами и группами ссылок: дом, инструменты и прочее.
-- Быстрый поиск через Yandex по умолчанию, с запуском по Enter или кнопкой мышью.
-- Поиск закреплен над правой областью плиток и не уезжает при переключении вкладок.
-- Локальные баннеры в `src/img/banners`.
-- Иконки Tabler Icons и Material Icons.
-- Погода для Ижевска.
-- Конфиг ссылок и поведения в `userconfig.js`.
+- Центральная карточка с тремя вкладками и группами ссылок.
+- Живой `PulsingBorder` из `paper-design/shaders`, подключенный локально из `src/vendor/paper-shaders`.
+- Темная прозрачная карточка поверх внешнего цветного свечения.
+- Поиск через Yandex по умолчанию.
+- Подсказки поисковых запросов из Yandex Suggest во время ввода.
+- Нижняя панель с переключателем вкладок, кнопкой `SAKURAST` и температурой.
+- Конфигурация ссылок, вкладок и горячих клавиш в `userconfig.js`.
+- Локальный приватный оверлей через `localconfig.js`, который не попадает в git.
 
 ## Быстрый запуск
 
@@ -38,71 +21,82 @@
 python webserver.py
 ```
 
-После запуска открой:
+Открой:
 
 ```text
 http://127.0.0.1:1111/
 ```
 
-На Windows можно использовать `webserver_starter.bat` и добавить ярлык на него в автозагрузку, чтобы страница поднималась после входа в систему.
+На Windows можно запускать `webserver_starter.bat` и добавить ярлык в автозагрузку, чтобы стартовая страница поднималась вместе с системой.
 
-## Настройка браузера
+## Важно про поиск
 
-Для Firefox удобно использовать расширение `New Tab Override`:
+Подсказки работают через локальный endpoint:
 
-1. Запусти локальный сервер через `webserver.py` или `webserver_starter.bat`.
-2. Установи `New Tab Override`.
-3. Укажи URL новой вкладки: `http://127.0.0.1:1111/`.
-4. При необходимости добавь папку `php` в `PATH`, если используешь старый PHP-способ запуска.
+```text
+/api/suggest?q=текст
+```
+
+Браузер не обращается к Yandex Suggest напрямую. `webserver.py` делает серверный запрос к `https://suggest.yandex.ru/suggest-ff.cgi`, возвращает чистый JSON и тем самым обходит браузерные ограничения на прямой JSONP/CORS-запрос.
+
+Если открыть `index.html` как файл без локального сервера, сама страница может отрисоваться, но поисковые подсказки работать не будут.
+
+## Paper shader
+
+Основной фон-обводка находится в `src/common/paper-shader.js`.
+
+Текущие настройки:
+
+```js
+colors: ["#0dd9fd", "#f06bff", "#ff1500cc", "#eeff38"]
+colorBack: "#000000"
+roundness: 0.25
+thickness: 0.22
+softness: 1
+intensity: 1
+bloom: 0.66
+spots: 4
+pulse: 0.53
+smoke: 0.53
+smokeSize: 0.61
+speed: 0.14
+scale: 0.6
+```
+
+Шейдер монтируется на элемент карточки после загрузки web components. Если WebGL или модуль шейдера не поднимется, страница покажет диагностическое сообщение внизу экрана.
 
 ## Конфигурация
 
-Основной файл настроек: `userconfig.js`.
+Основной публичный конфиг:
+
+```text
+userconfig.js
+```
 
 В нем меняются:
 
-- `temperature.location` и `temperature.scale` для погоды.
-- `clock.format` и `clock.iconColor` для часов.
-- `search.engines` для поисковых систем.
-- `keybindings` для горячих клавиш.
-- `fastlink` для быстрой ссылки.
-- `localIcons`, если нужно использовать локальный набор иконок.
-- `tabs`, `categories` и `links` для вкладок, групп и плиток.
+- `temperature.location` и `temperature.scale`;
+- `search.engines`;
+- `keybindings`;
+- `tabs`, `categories` и `links`;
+- локальные иконки и настройки поведения страницы.
 
-Пример ссылки:
+Приватный локальный конфиг:
 
-```js
-{
-  name: "github",
-  url: "https://github.com/",
-  icon: "brand-github",
-  icon_color: "#d3869b",
-}
+```text
+localconfig.js
 ```
 
-## Поиск
-
-Поиск находится над правой областью плиток. Он не является частью анимируемой вкладки, поэтому при переключении постеров остается на месте.
-
-По умолчанию используется первый движок из `CONFIG.search.engines`:
-
-```js
-g: ["https://yandex.ru/search/?text=", "Yandex"]
-```
-
-Запустить поиск можно двумя способами:
-
-- нажать `Enter`;
-- нажать кнопку с иконкой поиска.
+Этот файл указан в `.gitignore`. Используй его для личных ссылок, URL и настроек, которые не должны попадать в публичный репозиторий.
 
 ## Горячие клавиши
 
 | Клавиша | Действие |
 | --- | --- |
-| Цифры, колесо мыши, клик | Переключение вкладок |
 | `s` или `ы` | Фокус на поиске |
 | `q` | Открыть конфигурацию |
-| `Esc` | Закрыть диалог |
+| Цифры, колесо мыши, клик | Переключение вкладок |
+| `Esc` | Закрыть диалог или подсказки поиска |
 
 ## Структура проекта
 
@@ -110,36 +104,41 @@ g: ["https://yandex.ru/search/?text=", "Yandex"]
 .
 ├── index.html
 ├── userconfig.js
-├── webserver.py
+├── localconfig.js          # локальный файл, игнорируется git
+├── webserver.py            # локальный сервер и proxy для suggest
 ├── webserver_starter.bat
 ├── src/
+│   ├── common/
+│   │   └── paper-shader.js
 │   ├── components/
 │   │   ├── search/
+│   │   ├── statusbar/
 │   │   ├── tabs/
-│   │   ├── clock/
-│   │   ├── weather/
-│   │   └── statusbar/
+│   │   └── weather/
 │   ├── css/
 │   ├── fonts/
-│   └── img/
+│   ├── img/
+│   └── vendor/
+│       └── paper-shaders/
 └── php/
 ```
 
-## Баннеры
+## Проверка перед коммитом
 
-Баннеры лежат в `src/img/banners`:
+```powershell
+python -m py_compile webserver.py
+node --check src/components/search/search.component.js
+node --check src/components/statusbar/statusbar.component.js
+node --check src/components/tabs/tabs.component.js
+```
 
-- `ost1.png`
-- `ost2.png`
-- `ost2-.png`
-- `ost3.png`
-
-Чтобы заменить фон вкладки, поменяй `background_url` в `userconfig.js`.
+Если `node` не установлен в системном `PATH`, можно использовать bundled Node из Codex runtime или другой локальный Node.js.
 
 ## Благодарности
 
-- Основа проекта: [Tartarus Startpage by AllJavi](https://github.com/AllJavi/tartarus-startpage)
-- Оригинальная идея: [Dawn Startpage by b-coimbra](https://github.com/b-coimbra/dawn)
+- [Paper Design Shaders](https://github.com/paper-design/shaders) за `PulsingBorder`.
+- [Tartarus Startpage](https://github.com/AllJavi/tartarus-startpage) за исходную основу.
+- [Dawn Startpage](https://github.com/b-coimbra/dawn) за первоначальную идею.
 
 ## Лицензия
 
