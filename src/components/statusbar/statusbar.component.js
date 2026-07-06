@@ -142,7 +142,7 @@ class Statusbar extends Component {
           align-items: center;
           justify-content: center;
           position: relative;
-          top: 5px;
+          top: 3px;
           height: 36px;
           padding: 0 8px;
           border: 0;
