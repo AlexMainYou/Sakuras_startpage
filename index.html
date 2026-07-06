@@ -57,6 +57,57 @@
     <script type="text/javascript" src="src/components/config/config.component.js"></script>
 
     <script type="text/javascript" src="src/common/module.js"></script>
-    <script type="module" src="src/common/paper-shader.js"></script>
+    <script>
+      window.paperShaderLoadErrors = [];
+      window.addEventListener("error", function(event) {
+        var file = event.filename || "";
+        if (file.indexOf("paper") !== -1 || file.indexOf("shader") !== -1) {
+          window.paperShaderLoadErrors.push(event.message + " @ " + file);
+        }
+      });
+      window.addEventListener("unhandledrejection", function(event) {
+        var reason = event.reason && (event.reason.stack || event.reason.message || String(event.reason));
+        if (reason && (reason.indexOf("paper") !== -1 || reason.indexOf("shader") !== -1 || reason.indexOf("WebGL") !== -1)) {
+          window.paperShaderLoadErrors.push(reason);
+        }
+      });
+      window.addEventListener("load", function() {
+        var attempts = 0;
+        var maxAttempts = 24;
+        var checkPaperShader = function() {
+          attempts += 1;
+          var root = document.querySelector("tabs-list") && document.querySelector("tabs-list").shadowRoot;
+          var panel = root && root.querySelector(".panel-shader");
+
+          if (panel && panel.dataset.paperShaderMounted === "true") {
+            var existingWarning = document.querySelector("#paper-shader-runtime-error");
+            if (existingWarning) existingWarning.remove();
+            return;
+          }
+
+          if (attempts < maxAttempts) {
+            setTimeout(checkPaperShader, 500);
+            return;
+          }
+
+          if (!panel || !panel.dataset.paperShaderMounted) {
+            var details = [
+              panel && panel.dataset.paperShaderError ? "panel: " + panel.dataset.paperShaderError : "",
+              window.paperShaderStatus ? "status: " + window.paperShaderStatus.status + " " + (window.paperShaderStatus.detail || "") : "",
+              window.paperShaderLoadErrors.join(" | "),
+            ].filter(Boolean).join(" | ");
+
+            var warning = document.createElement("div");
+            warning.id = "paper-shader-runtime-error";
+            warning.textContent = "Paper shader did not mount: " + (details || "unknown WebGL/module error");
+            warning.style.cssText = "position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;padding:10px 12px;border:1px solid #ff1500;background:#120000;color:#fff;font:12px monospace;border-radius:8px;";
+            document.body.appendChild(warning);
+          }
+        };
+
+        setTimeout(checkPaperShader, 500);
+      });
+    </script>
+    <script type="module" src="src/common/paper-shader.js?v=local-paper-esm-8"></script>
   </body>
 </html>

@@ -98,31 +98,29 @@ class Tabs extends Component {
           content: "";
           position: absolute;
           inset: 0;
-          z-index: 1;
+          z-index: 2;
           pointer-events: none;
-          background:
-              linear-gradient(115deg, rgba(13, 217, 253, 0.16), transparent 24%, rgba(240, 107, 255, 0.15) 52%, transparent 74%, rgba(238, 255, 56, 0.12)),
-              radial-gradient(ellipse at center, rgba(13, 217, 253, 0.08), transparent 46%);
-          mix-blend-mode: screen;
+          background: transparent;
       }
 
       .page-shader::after {
           content: "";
           position: absolute;
           inset: 0;
-          z-index: 2;
+          z-index: 3;
           pointer-events: none;
-          background:
-              radial-gradient(ellipse 72% 60% at 50% 50%, transparent 0 42%, rgba(0, 0, 0, 0.2) 62%, rgba(0, 0, 0, 0.72) 100%);
+          background: transparent;
       }
 
       .page-shader canvas,
       .panel-shader canvas {
-          position: relative;
-          z-index: 0;
+          position: absolute !important;
+          inset: 0 !important;
+          z-index: 1 !important;
           display: block;
           width: 100% !important;
           height: 100% !important;
+          border-radius: inherit;
       }
 
       #links {
@@ -153,8 +151,8 @@ class Tabs extends Component {
       }
 
       #panels {
-          width: clamp(760px, 60vw, 900px);
-          height: clamp(430px, 60vh, 540px);
+          width: clamp(836px, calc(60vw + 76px), 976px);
+          height: clamp(306px, calc(60vh - 124px), 416px);
           border-radius: 24px;
           overflow: visible;
           isolation: isolate;
@@ -162,14 +160,25 @@ class Tabs extends Component {
 
       .panel-shader {
           position: absolute;
-          inset: -118px;
+          inset: -28px;
           z-index: 0;
           overflow: hidden;
           border-radius: 48px;
           background: transparent;
           filter: saturate(1.18);
-          opacity: 0.92;
+          mix-blend-mode: screen;
+          opacity: 0.88;
           pointer-events: none;
+      }
+
+      .panel-shader::after {
+          content: "";
+          position: absolute;
+          inset: 26px;
+          z-index: 2;
+          pointer-events: none;
+          border-radius: 26px;
+          box-shadow: none;
       }
 
       .panel-core {
@@ -180,13 +189,9 @@ class Tabs extends Component {
           border: 1px solid var(--card-border-fallback);
           border-radius: 24px;
           background: var(--card-glass);
-          box-shadow:
-              0 30px 60px rgba(0, 0, 0, 0.4),
-              0 0 120px rgba(13, 217, 253, 0.12),
-              0 0 140px rgba(240, 107, 255, 0.1),
-              inset 0 1px 0 rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(24px) saturate(140%);
-          -webkit-backdrop-filter: blur(24px) saturate(140%);
+          box-shadow: none;
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
       }
 
       .panel-core::before {
@@ -195,14 +200,16 @@ class Tabs extends Component {
           inset: 0;
           z-index: 0;
           pointer-events: none;
-          background:
-              linear-gradient(145deg, rgba(255, 255, 255, 0.08), transparent 24%),
-              radial-gradient(ellipse 80% 70% at 50% 46%, rgba(255, 255, 255, 0.045), transparent 60%);
+          background: transparent;
       }
 
       .panel-core > .categories {
           position: relative;
-          z-index: 1;
+          z-index: 4;
+      }
+
+      .panel-core > status-bar {
+          z-index: 5;
       }
 
       .categories {
