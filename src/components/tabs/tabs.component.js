@@ -4,7 +4,7 @@ class Links extends Component {
   }
 
   static getIcon(link) {
-    const defaultColor = "#726f6f";
+    const defaultColor = "#f5f7ff";
 
     return link.icon
       ? `<i class="ti ti-${link.icon} link-icon"
@@ -46,18 +46,11 @@ class Category extends Component {
     super();
   }
 
-  static getBackgroundStyle(url) {
-    return `style="background-image: url(${url}); background-repeat: no-repeat;background-size: contain;"`;
-  }
-
   static getAll(tabs) {
     return `
       ${
-      tabs.map(({ name, background_url }, index) => {
-        return `<ul class="${name}" ${
-          Category.getBackgroundStyle(background_url)
-        } ${index == 0 ? "active" : ""}>
-            <div class="banner"></div>
+      tabs.map(({ name }, index) => {
+        return `<ul class="${name}" ${index == 0 ? "active" : ""}>
             <div class="links">${Links.getAll(name, tabs)}</div>
           </ul>`;
       }).join("")
@@ -86,35 +79,130 @@ class Tabs extends Component {
 
   style() {
     return `
-      status-bar {
-          bottom: -70px;
-          height: 32px;
-          background: #282828;
-          border-radius: 4px;
-          box-shadow: 0 10px 20px rgba(0, 0, 0, .25);
+      :host {
+          display: block;
+          width: 100%;
+          height: 100%;
       }
 
-      #panels, #panels ul,
+      .page-shader {
+          position: fixed;
+          inset: 0;
+          z-index: 0;
+          overflow: hidden;
+          background: #000;
+          pointer-events: none;
+      }
+
+      .page-shader::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          pointer-events: none;
+          background:
+              linear-gradient(115deg, rgba(13, 217, 253, 0.16), transparent 24%, rgba(240, 107, 255, 0.15) 52%, transparent 74%, rgba(238, 255, 56, 0.12)),
+              radial-gradient(ellipse at center, rgba(13, 217, 253, 0.08), transparent 46%);
+          mix-blend-mode: screen;
+      }
+
+      .page-shader::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: 2;
+          pointer-events: none;
+          background:
+              radial-gradient(ellipse 72% 60% at 50% 50%, transparent 0 42%, rgba(0, 0, 0, 0.2) 62%, rgba(0, 0, 0, 0.72) 100%);
+      }
+
+      .page-shader canvas,
+      .panel-shader canvas {
+          position: relative;
+          z-index: 0;
+          display: block;
+          width: 100% !important;
+          height: 100% !important;
+      }
+
+      #links {
+          position: relative;
+          z-index: 1;
+          width: 100%;
+          height: 100%;
+          display: grid;
+          place-items: center;
+          padding: 32px;
+      }
+
+      status-bar {
+          position: absolute;
+          right: 0;
+          bottom: 24px;
+          left: 0;
+          width: min(500px, calc(100% - 48px));
+          height: 48px;
+          margin: 0 auto;
+          z-index: 4;
+      }
+
+      #panels,
+      #panels ul,
       #panels .links {
           position: absolute;
       }
 
-      .nav {
-          color: #fff;
+      #panels {
+          width: clamp(760px, 60vw, 900px);
+          height: clamp(430px, 60vh, 540px);
+          border-radius: 24px;
+          overflow: visible;
+          isolation: isolate;
       }
 
-      #panels {
-          border-radius: 5px 0 0 5px;
-          width: 90%;
-          max-width: 1200px;
-          height: 450px;
-          right: 0;
-          left: 0;
-          top: 0;
-          bottom: 0;
-          margin: auto;
-          box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
-          background: #282828;
+      .panel-shader {
+          position: absolute;
+          inset: -118px;
+          z-index: 0;
+          overflow: hidden;
+          border-radius: 48px;
+          background: transparent;
+          filter: saturate(1.18);
+          opacity: 0.92;
+          pointer-events: none;
+      }
+
+      .panel-core {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          overflow: hidden;
+          border: 1px solid var(--card-border-fallback);
+          border-radius: 24px;
+          background: var(--card-glass);
+          box-shadow:
+              0 30px 60px rgba(0, 0, 0, 0.4),
+              0 0 120px rgba(13, 217, 253, 0.12),
+              0 0 140px rgba(240, 107, 255, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(24px) saturate(140%);
+          -webkit-backdrop-filter: blur(24px) saturate(140%);
+      }
+
+      .panel-core::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          pointer-events: none;
+          background:
+              linear-gradient(145deg, rgba(255, 255, 255, 0.08), transparent 24%),
+              radial-gradient(ellipse 80% 70% at 50% 46%, rgba(255, 255, 255, 0.045), transparent 60%);
+      }
+
+      .panel-core > .categories {
+          position: relative;
+          z-index: 1;
       }
 
       .categories {
@@ -122,7 +210,7 @@ class Tabs extends Component {
           height: 100%;
           overflow: hidden;
           position: relative;
-          border-radius: 10px 0 0 10px;
+          border-radius: 24px;
       }
 
       .tabs-container {
@@ -132,70 +220,70 @@ class Tabs extends Component {
       }
 
       .categories ul {
-          --panelbg: transparent;
           --flavour: var(--accent);
           width: 100%;
           height: 100%;
           right: 100%;
-          background: #282828;
-          transition: all .6s;
-          position: absolute;
           top: 0;
+          background: transparent;
+          opacity: 0;
+          transition: right .5s cubic-bezier(.2, .8, .2, 1), opacity .35s ease;
       }
 
-      .categories ul:nth-child(2) { --flavour: #e78a4e; }
-      .categories ul:nth-child(3) { --flavour: #ea6962; }
-      .categories ul:nth-child(4) { --flavour: #7daea3; }
-      .categories ul:nth-child(5) { --flavour: #d3869b; }
-      .categories ul:nth-child(6) { --flavour: #d3869b; }
-      /* ... остальные цвета по желанию ... */
+      .categories ul:nth-child(2) { --flavour: #f06bff; }
+      .categories ul:nth-child(3) { --flavour: #eeff38; }
+      .categories ul:nth-child(4) { --flavour: #ff1500; }
 
       .categories ul[active] {
           right: 0;
           z-index: 1;
+          opacity: 1;
       }
 
       .categories .links {
-          right: 0;
-          width: 75%;
-          height: 100%;
-          background: #282828;
+          inset: 104px 32px 96px;
+          width: auto;
+          height: auto;
           box-sizing: border-box;
-          padding: 96px 5% 3%;
+          padding: 0 6px 8px;
           flex-wrap: wrap;
-          overflow-y: auto; /* Добавляем скролл если ссылок много */
+          overflow-y: auto;
       }
 
       .categories > search-bar {
           display: block;
           position: absolute;
-          top: 22px;
-          right: 5%;
-          width: 65%;
+          top: 32px;
+          right: 32px;
+          left: 32px;
+          width: auto;
           z-index: 3;
       }
-      
-      /* Скрываем скроллбар для красоты */
-      .categories .links::-webkit-scrollbar { width: 0; }
+
+      .categories .links::-webkit-scrollbar {
+          width: 0;
+      }
 
       .categories .links li {
           list-style: none;
       }
 
       .categories ul .links a {
-          color: #d4be98;
+          color: var(--text-primary);
           text-decoration: none;
-          font: 700 18px 'Roboto', sans-serif;
-          transition: all .2s;
+          font: 700 15px 'Roboto', sans-serif;
+          transition: transform .2s cubic-bezier(.16, 1, .3, 1), border-color .25s ease, background .25s ease, color .25s ease, box-shadow .25s ease;
           display: inline-flex;
           align-items: center;
-          padding: .4em .7em;
-          background: #32302f;
-          box-shadow: 0 4px rgba(50, 48, 47, 0.5), 0 5px 10px rgb(0 0 0 / 20%);
-          border-radius: 2px;
-          margin-bottom: .7em;
+          min-height: 44px;
+          padding: 0 14px;
+          background: var(--btn-bg);
+          border: 1px solid var(--btn-border);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+          border-radius: 12px;
+          margin-bottom: 10px;
       }
-      
+
       .categories .link-name {
           font-family: 'Montserrat', sans-serif;
           font-weight: 600;
@@ -205,59 +293,40 @@ class Tabs extends Component {
           display: inline-flex;
       }
 
-      .categories .link-info:not(:last-child) { margin-right: .5em; }
-
-      .categories ul .links a:hover {
-          transform: translate(0, 4px);
-          box-shadow: 0 0 rgba(0, 0, 0, 0.25), 0 0 0 rgba(0, 0, 0, .5), 0 -0px 5px rgba(0, 0, 0, .1);
-          color: var(--flavour);
+      .categories .link-info:not(:last-child) {
+          margin-right: 10px;
       }
 
-      .categories ul::after {
-          content: attr(class);
-          position: absolute;
-          display: flex;
-          text-transform: uppercase;
-          overflow-wrap: break-word;
-          width: 25px;
-          padding: 1em;
-          margin: auto;
-          left: calc(5% - 42.5px);
-          bottom: 0;
-          top: 0;
-          background: linear-gradient(to top, rgb(50 48 47 / 90%), transparent);
+      .categories ul .links a:hover {
+          transform: translateY(-2px);
+          background: var(--btn-bg-hover);
+          border-color: var(--btn-border-hover);
           color: var(--flavour);
-          letter-spacing: 1px;
-          font: 600 30px 'Montserrat', sans-serif;
-          text-align: center;
-          flex-wrap: wrap;
-          word-break: break-all;
-          align-items: center;
-          backdrop-filter: blur(3px);
-          -webkit-text-stroke: 7px black;
-          paint-order: stroke fill;
+          box-shadow:
+              0 10px 28px rgba(0, 0, 0, 0.22),
+              0 0 20px color-mix(in srgb, var(--flavour), transparent 78%),
+              inset 0 1px 0 rgba(255, 255, 255, 0.08);
       }
 
       .categories .links li:not(:last-child) {
-          box-shadow: 0 1px 0 rgba(212, 190, 152, .25);
-          padding: 0 0 .5em 0;
-          margin-bottom: 1.5em;
+          padding: 0 0 18px 0;
+          margin-bottom: 18px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       }
 
       .categories .links li h1 {
-          color: #d4be98;
-          opacity: 0.5;
-          font-size: 13px;
-          margin-bottom: 1em;
+          color: var(--text-muted);
+          font-size: 12px;
+          margin-bottom: 12px;
           font-weight: 600;
-          letter-spacing: 1px;
+          letter-spacing: 0;
           text-transform: uppercase;
           font-family: 'Montserrat', sans-serif;
       }
 
       .categories .link-icon {
-          font-size: 27px;
-          color: #726f6f;
+          font-size: 22px;
+          color: #f5f7ff;
       }
 
       .categories .link-icon + .link-name {
@@ -267,36 +336,6 @@ class Tabs extends Component {
       .categories .links-wrapper {
           display: flex;
           flex-wrap: wrap;
-      }
-
-      /* Private optional link button */
-      .private-link-btn {
-          position: absolute;
-          top: 0;
-          right: -60px; /* Выносим вправо за пределы основного блока */
-          width: 50px;
-          height: 50px;
-          background: #32302f;
-          border-radius: 5px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
-          transition: all .2s;
-          text-decoration: none;
-          border: 1px solid transparent;
-      }
-
-      .private-link-btn:hover {
-          background: #282828;
-          border-color: #a9b665;
-          transform: translateY(2px);
-      }
-
-      .private-link-btn i {
-          color: #a9b665; /* Цвет иконки */
-          font-size: 25px;
       }
 
       .ti {
@@ -309,48 +348,88 @@ class Tabs extends Component {
           0% { opacity: 0; }
           100% { opacity: 1; }
       }
-    `;
-  }
 
-  getPrivateLinkButton() {
-    const button = window.LOCAL_CONFIG?.privateButton;
+      @media (max-width: 760px) {
+          #links {
+              padding: 18px;
+          }
 
-    if (!button?.url) return "";
+          #panels {
+              width: 90vw;
+              height: 75vh;
+              min-height: 520px;
+          }
 
-    const title = button.title ?? "Private link";
-    const icon = button.icon ?? "link";
-    const iconColor = button.iconColor ?? "#a9b665";
+          .categories .links {
+              inset: 88px 20px 92px;
+          }
 
-    return `
-          <a href="${button.url}" class="private-link-btn" title="${title}">
-             <i class="ti ti-${icon}" style="color: ${iconColor}"></i>
-          </a>
+          .categories > search-bar {
+              top: 20px;
+              left: 20px;
+              right: 20px;
+          }
+
+          status-bar {
+              left: 16px;
+              right: 16px;
+          }
+      }
     `;
   }
 
   template() {
     return `
+      <div class="page-shader" data-paper-shader="page"></div>
       <div id="links" class="-">
         <div id="panels">
-          ${this.getPrivateLinkButton()}
+          <div class="panel-shader" data-paper-shader="panel"></div>
 
-          <div class="categories">
-            <search-bar></search-bar>
+          <div class="panel-core">
+            <div class="categories">
+              <search-bar></search-bar>
 
-            <!-- Контейнер для вкладок -->
-            <div class="tabs-container">
+              <div class="tabs-container">
                 ${Category.getAll(this.tabs)}
+              </div>
+
+              <config-tab></config-tab>
             </div>
-            
-            <config-tab></config-tab>
+            <status-bar class="!-"></status-bar>
           </div>
-          <status-bar class="!-"></status-bar>
         </div>
       </div>
     `;
   }
 
+  setTabClickFallback() {
+    this.addEventListener("click", (event) => {
+      const status = this.shadow.querySelector("status-bar");
+      const statusRoot = status?.shadowRoot;
+      const buttons = statusRoot?.querySelectorAll("#tabs ul li[tab-index]");
+
+      if (!buttons?.length) return;
+
+      for (const button of buttons) {
+        const key = Number(button.getAttribute("tab-index"));
+        if (!Number.isInteger(key) || key >= this.tabs.length) continue;
+
+        const rect = button.getBoundingClientRect();
+        const inside =
+          event.clientX >= rect.left &&
+          event.clientX <= rect.right &&
+          event.clientY >= rect.top &&
+          event.clientY <= rect.bottom;
+
+        if (inside) {
+          status.activateByKey(key);
+          break;
+        }
+      }
+    });
+  }
+
   connectedCallback() {
-    this.render();
+    this.render().then(() => this.setTabClickFallback());
   }
 }

@@ -1,12 +1,11 @@
 class Search extends Component {
   refs = {
-    search: '#search',
-    input: '#search input[type="text"]'
+    search: "#search",
+    input: "#search input[type=\"text\"]",
   };
 
   constructor() {
     super();
-    // Берем первый движок из конфига как дефолтный (обычно это Yandex/Google)
     this.defaultEngine = Object.values(CONFIG.search.engines)[0][0];
   }
 
@@ -22,20 +21,33 @@ class Search extends Component {
           align-items: center;
           justify-content: center;
           width: 100%;
-          height: 52px;
-          background: #282828;
+          height: 48px;
+          background: var(--btn-bg);
           z-index: 20;
           position: relative;
-          border-bottom: 1px solid #32302f;
+          border: 1px solid var(--btn-border);
+          border-radius: 999px;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+          transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+      }
+
+      #search:focus-within {
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(13, 217, 253, 0.46);
+          box-shadow:
+              0 0 0 2px rgba(13, 217, 253, 0.2),
+              0 0 15px rgba(13, 217, 253, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.08);
       }
 
       #search .search-box {
           display: grid;
-          grid-template-columns: minmax(0, 1fr) 40px;
+          grid-template-columns: minmax(0, 1fr) 38px;
           align-items: center;
           gap: 8px;
           position: relative;
           width: 100%;
+          padding: 0 6px 0 16px;
       }
 
       #search input {
@@ -44,31 +56,31 @@ class Search extends Component {
           width: 100%;
           padding: .5em 0;
           background: none;
-          font: 500 18px 'Roboto', sans-serif;
+          font: 500 16px 'Roboto', sans-serif;
           letter-spacing: 0;
-          color: #d4be98;
-          text-align: center; /* Центрируем текст */
+          color: rgba(245, 247, 255, 0.94);
+          text-align: left;
       }
 
       #search button {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 40px;
-          height: 40px;
-          border: 1px solid #3c3836;
-          border-radius: 6px;
-          background: #32302f;
-          color: #d4be98;
+          width: 38px;
+          height: 38px;
+          border: 1px solid var(--btn-border);
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.04);
+          color: rgba(245, 247, 255, 0.9);
           cursor: pointer;
           transition: border-color .15s ease, color .15s ease, background .15s ease;
       }
 
       #search button:hover,
       #search button:focus {
-          border-color: #e78a4e;
-          color: #e78a4e;
-          background: #3c3836;
+          border-color: #0dd9fd;
+          color: #0dd9fd;
+          background: rgba(13, 217, 253, 0.1);
           outline: 0;
       }
 
@@ -78,17 +90,12 @@ class Search extends Component {
       }
 
       #search input::placeholder {
-          color: rgba(212, 190, 152, 0.3);
-      }
-
-      #search input:focus {
-          /* Подсветка при наборе */
-          border-bottom: 1px solid #d4be98;
+          color: rgba(245, 247, 255, 0.34);
       }
 
       #search input::selection {
-          background: #e78a4e;
-          color: #32302f;
+          background: #0dd9fd;
+          color: #05070c;
       }
     `;
   }
@@ -96,7 +103,7 @@ class Search extends Component {
   imports() {
     return [
       this.resources.fonts.roboto,
-      this.resources.icons.material
+      this.resources.icons.material,
     ];
   }
 
@@ -104,8 +111,8 @@ class Search extends Component {
     return `
         <div id="search">
           <div class="search-box">
-            <input type="text" spellcheck="false" placeholder="Что ищем?">
-            <button type="button" title="Искать" aria-label="Искать">
+            <input type="text" spellcheck="false" placeholder="Search">
+            <button type="button" title="Search" aria-label="Search">
               <i class="material-icons">search</i>
             </button>
           </div>
@@ -121,25 +128,24 @@ class Search extends Component {
   }
 
   handleSearch(event) {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       this.search(event.target.value);
     }
   }
 
   setEvents() {
-    const input = this.shadow.querySelector('input[type="text"]');
-    const button = this.shadow.querySelector('button');
+    const input = this.shadow.querySelector("input[type=\"text\"]");
+    const button = this.shadow.querySelector("button");
 
-    input.addEventListener('keyup', (event) => this.handleSearch(event));
-    button.addEventListener('click', () => this.search(input.value));
+    input.addEventListener("keyup", (event) => this.handleSearch(event));
+    button.addEventListener("click", () => this.search(input.value));
   }
 
   connectedCallback() {
     this.render().then(() => {
       this.setEvents();
-      // Автофокус при загрузке
       setTimeout(() => {
-        this.shadow.querySelector('input[type="text"]').focus();
+        this.shadow.querySelector("input[type=\"text\"]").focus();
       }, 200);
     });
   }

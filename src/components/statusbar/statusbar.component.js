@@ -5,7 +5,6 @@ class Statusbar extends Component {
     categories: ".categories ul",
     tabs: "#tabs ul li",
     indicator: ".indicator",
-    fastlink: ".fastlink",
   };
 
   currentTabIndex = 0;
@@ -32,194 +31,132 @@ class Statusbar extends Component {
 
   style() {
     return `
-      *:not(:defined) { display: none; }
-
-      #tabs,
-      #tabs .widgets,
-      #tabs ul li:last-child {
-          position: absolute;
+      *:not(:defined) {
+          display: none;
       }
 
       #tabs {
           width: 100%;
           height: 100%;
-      }
-
-      #tabs ul {
-          counter-reset: tabs;
-          height: 100%;
-          position: relative;
-          list-style: none;
-          margin-left: 1em;
-      }
-
-      #tabs ul li:not(:last-child)::after {
-          content: counter(tabs, cjk-ideographic);
-          counter-increment: tabs;
-          display: flex;
-          width: 100%;
-          height: 100%;
-          position: relative;
-          align-items: center;
-          text-align: center;
-          justify-content: center;
-      }
-
-      #tabs ul li:not(:last-child) {
-          width: 35px;
-          text-align: center;
-          font: 700 13px 'Yu Gothic', serif;
-          color: rgba(212, 190, 152, 0.5);
-          padding: 6px 0;
-          transition: all .1s;
-          cursor: pointer;
-          line-height: 0;
-          height: 100%;
-      }
-
-      #tabs ul li:not(:last-child):hover {
-          background: #32302f;
-      }
-
-      #tabs ul li:last-child {
-          --flavour: var(--accent);
-          width: 35px;
-          height: 3px;
-          background: var(--flavour);
-          bottom: 0;
-          transition: all .3s;
-      }
-
-      #tabs ul li[active]:not(:last-child) {
-          color: #d4be98;
-          font-size: 13px;
-          padding: 6px 0;
-      }
-
-      #tabs ul li[active]:nth-child(2) ~ li:last-child { margin: 0 0 0 35px; }
-      #tabs ul li[active]:nth-child(3) ~ li:last-child { margin: 0 0 0 70px; }
-      #tabs ul li[active]:nth-child(4) ~ li:last-child { margin: 0 0 0 105px; }
-      #tabs ul li[active]:nth-child(5) ~ li:last-child { margin: 0 0 0 140px; }
-      #tabs ul li[active]:nth-child(6) ~ li:last-child { margin: 0 0 0 175px; }
-      #tabs ul li[active]:nth-child(7) ~ li:last-child { margin: 0 0 0 210px; }
-      #tabs ul li[active]:nth-child(8) ~ li:last-child { margin: 0 0 0 245px; }
-      #tabs ul li[active]:nth-child(9) ~ li:last-child { margin: 0 0 0 280px; }
-      #tabs ul li[active]:nth-child(10) ~ li:last-child { margin: 0 0 0 315px; }
-      #tabs ul li[active]:nth-child(11) ~ li:last-child { margin: 0 0 0 350px; }
-      #tabs ul li[active]:nth-child(12) ~ li:last-child { margin: 0 0 0 385px; }
-
-      #tabs ul li[active]:nth-child(2) ~ li:last-child {
-          --flavour: #e78a4e;
-      }
-
-      #tabs ul li[active]:nth-child(3) ~ li:last-child {
-          --flavour: #ea6962;
-      }
-
-      #tabs ul li[active]:nth-child(4) ~ li:last-child {
-          --flavour: #7daea3;
-      }
-
-      #tabs ul li[active]:nth-child(5) ~ li:last-child {
-          --flavour: #d3869b;
-      }
-
-      #tabs ul li[active]:nth-child(6) ~ li:last-child {
-          --flavour: #89b482;
-      }
-
-      #tabs ul li[active]:nth-child(7) ~ li:last-child {
-          --flavour: #a9b665;
-      }
-
-      #tabs ul li[active]:nth-child(8) ~ li:last-child {
-          --flavour: #e78a4e;
-      }
-
-      #tabs ul li[active]:nth-child(9) ~ li:last-child {
-          --flavour: #ea6962;
-      }
-
-      #tabs ul li[active]:nth-child(10) ~ li:last-child {
-          --flavour: #7daea3;
-      }
-
-      #tabs ul li[active]:nth-child(11) ~ li:last-child {
-          --flavour: #d3869b;
-      }
-
-      #tabs ul li[active]:nth-child(12) ~ li:last-child {
-          --flavour: #89b482;
-      }
-
-      .widgets {
-          right: 0;
-          margin: auto;
-          height: 32px;
-          color: #fff;
-          font-size: 12px;
-      }
-
-      .widgets:hover .edit {
-          margin: 0;
-      }
-
-      .widget {
-          position: relative;
-          height: 100%;
-          padding: 0 1em;
-      }
-
-      .widget:first-child {
-          padding-left: 2em;
-      }
-
-      .widget:last-child {
-          padding-right: 2em;
-      }
-
-      .widget:hover {
-          cursor: pointer;
-          background: rgba(255, 255, 255, .05);
+          border: 1px solid var(--bottom-bar-border);
+          border-radius: 999px;
+          background: var(--bottom-bar-bg);
+          box-shadow:
+              inset 0 1px 0 rgba(255, 255, 255, 0.08),
+              0 10px 30px rgba(0, 0, 0, 0.5);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
       }
 
       #tabs > cols {
-          position: relative;
-          grid-template-columns: [chat-tab] 35px [tabs] auto [widgets] auto;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto;
+          align-items: center;
+          height: 100%;
+          gap: 12px;
+          padding: 0 20px;
       }
 
-      #tabs .time span {
-          font-weight: 400;
+      #tabs ul {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          height: 100%;
+          min-width: 0;
+          list-style: none;
       }
 
-      #tabs i {
-          font-size: 14pt !important;
-      }
-
-      .widget:not(:first-child)::before {
-          content: '';
-          position: absolute;
-          display: block;
-          left: 0;
-          height: calc(100% - 15px);
-          width: 1px;
-          background: rgb(255 255 255 / 10%);
-      }
-
-      .fastlink {
+      #tabs ul li:not(:last-child) {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 24px;
+          height: 36px;
           border: 0;
-          background: #32302f;
-          color: #a9b665;
+          border-radius: 0;
+          color: var(--text-muted);
+          background: transparent;
+          font: 700 14px 'Roboto', sans-serif;
           cursor: pointer;
-          border-radius: 5px 15px 15px 5px;
+          position: relative;
+          transition: color .2s ease, transform .2s ease;
       }
 
-      .fastlink:hover {
-          filter: brightness(1.2);
+      #tabs ul li button {
+          width: 100%;
+          height: 100%;
+          border: 0;
+          border-radius: inherit;
+          background: transparent;
+          color: inherit;
+          font: inherit;
+          cursor: pointer;
       }
 
-      .fastlink-icon {
-	      width: 70%;
+      #tabs ul li:not(:last-child):hover {
+          color: var(--text-primary);
+          transform: translateY(-1px);
+      }
+
+      #tabs ul li[active]:not(:last-child) {
+          color: var(--text-primary);
+      }
+
+      #tabs ul li[active]:not(:last-child)::after {
+          content: "";
+          position: absolute;
+          right: 10%;
+          bottom: 2px;
+          left: 10%;
+          height: 2px;
+          border-radius: 999px;
+          background: var(--active-tab-indicator);
+          box-shadow: 0 0 8px var(--active-tab-indicator), 0 0 18px var(--active-tab-indicator);
+      }
+
+      #tabs ul li:last-child {
+          display: none;
+      }
+
+      .widgets {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          height: 100%;
+          color: #fff;
+      }
+
+      .widget {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 36px;
+          min-width: 64px;
+          padding: 0 16px;
+          border: 1px solid var(--btn-border);
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.03);
+      }
+
+      @media (max-width: 520px) {
+          #tabs > cols {
+              gap: 8px;
+              padding-left: 8px;
+          }
+
+          #tabs ul {
+              gap: 6px;
+          }
+
+          #tabs ul li:not(:last-child) {
+              width: 34px;
+              height: 34px;
+          }
+
+          .widget {
+              min-width: 58px;
+              padding: 0 12px;
+          }
       }
     `;
   }
@@ -228,12 +165,8 @@ class Statusbar extends Component {
     return `
         <div id="tabs">
             <cols>
-                <button class="+ fastlink">
-                  <img class="fastlink-icon" src="src/img/pokeball.svg"/>
-                </button>
                 <ul class="- indicator"></ul>
                 <div class="+ widgets col-end">
-                    <current-time class="+ widget"></current-time>
                     <weather-forecast class="+ widget weather"></weather-forecast>
                 </div>
             </cols>
@@ -241,18 +174,10 @@ class Statusbar extends Component {
   }
 
   setEvents() {
-    this.refs.tabs.forEach((tab) =>
-      tab.onclick = ({ target }) => this.handleTabChange(target)
-    );
+    this.refs.indicator.addEventListener("click", ({ target }) => this.handleTabChange(target));
 
     document.onkeydown = (e) => this.handleKeyPress(e);
     document.onwheel = (e) => this.handleWheelScroll(e);
-    this.refs.fastlink.onclick = () => {
-      console.log(CONFIG.fastlink);
-      if (CONFIG.config.fastlink) {
-        window.location.href = CONFIG.config.fastlink;
-      }
-    }
 
     if (CONFIG.openLastVisitedTab) {
       window.onbeforeunload = () => this.saveCurrentTab();
@@ -265,11 +190,18 @@ class Statusbar extends Component {
 
   openLastVisitedTab() {
     if (!CONFIG.openLastVisitedTab) return;
-    this.activateByKey(localStorage.lastVisitedTab);
+    const key = Number(localStorage.lastVisitedTab);
+
+    if (Number.isInteger(key)) {
+      this.activateByKey(key);
+    }
   }
 
   handleTabChange(tab) {
-    this.activateByKey(Number(tab.getAttribute("tab-index")));
+    const item = tab.closest?.("li") ?? tab;
+    if (!item || item === this.refs.indicator) return;
+
+    this.activateByKey(Number(item.getAttribute("tab-index")));
   }
 
   handleWheelScroll(event) {
@@ -311,7 +243,7 @@ class Statusbar extends Component {
   }
 
   activateByKey(key) {
-    if (key < 0) return;
+    if (!Number.isInteger(key) || key < 0 || key >= this.externalRefs.categories.length) return;
     this.currentTabIndex = key;
 
     this.activate(this.refs.tabs, this.refs.tabs[key]);
@@ -325,9 +257,10 @@ class Statusbar extends Component {
     const categoriesCount = this.externalRefs.categories.length;
 
     for (let i = 0; i <= categoriesCount; i++) {
-      this.refs.indicator.innerHTML += `<li tab-index=${i} ${
+      const label = i < categoriesCount ? String(i + 1) : "";
+      this.refs.indicator.innerHTML += `<li tab-index=${i} data-label="${label}" ${
         i == 0 ? "active" : ""
-      }></li>`;
+      }>${label ? `<button type="button" aria-label="Tab ${label}">${label}</button>` : ""}</li>`;
     }
   }
 
