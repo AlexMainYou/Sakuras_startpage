@@ -64,6 +64,7 @@ class Statusbar extends Component {
           height: 100%;
           min-width: 0;
           list-style: none;
+          position: relative;
       }
 
       #tabs ul li:not(:last-child) {
@@ -103,15 +104,24 @@ class Statusbar extends Component {
       }
 
       #tabs ul li[active]:not(:last-child)::after {
-          content: "";
+          content: none;
+      }
+
+      .tab-underline {
           position: absolute;
-          right: 10%;
           bottom: 2px;
-          left: 10%;
+          left: 0;
+          width: 0;
           height: 2px;
           border-radius: 999px;
           background: var(--active-tab-indicator);
           box-shadow: 0 0 8px var(--active-tab-indicator), 0 0 18px var(--active-tab-indicator);
+          transform: translateX(0);
+          transition:
+              transform .46s cubic-bezier(.13, 1.12, .24, 1),
+              width .46s cubic-bezier(.13, 1.12, .24, 1);
+          pointer-events: none;
+          will-change: transform, width;
       }
 
       #tabs ul li:last-child {
@@ -131,6 +141,8 @@ class Statusbar extends Component {
           display: inline-flex;
           align-items: center;
           justify-content: center;
+          position: relative;
+          top: 5px;
           height: 36px;
           padding: 0 8px;
           border: 0;
@@ -291,11 +303,34 @@ class Statusbar extends Component {
         i == 0 ? "active" : ""
       }>${label ? `<button type="button" aria-label="Tab ${label}">${label}</button>` : ""}</li>`;
     }
+
+    this.refs.indicator.innerHTML += `<span class="tab-underline"></span>`;
+    requestAnimationFrame(() => this.updateTabUnderline());
   }
 
   activate(target, item) {
     target.forEach((i) => i.removeAttribute("active"));
     item.setAttribute("active", "");
+
+    if (item.parentElement === this.refs.indicator) {
+      this.updateTabUnderline();
+    }
+  }
+
+  updateTabUnderline() {
+    const underline = this.shadow.querySelector(".tab-underline");
+    const activeTab = this.shadow.querySelector("#tabs ul li[active]:not(:last-child)");
+    const list = this.refs.indicator;
+
+    if (!underline || !activeTab || !list) return;
+
+    const listRect = list.getBoundingClientRect();
+    const tabRect = activeTab.getBoundingClientRect();
+    const width = Math.max(10, Math.round(tabRect.width * 0.8));
+    const x = Math.round(tabRect.left - listRect.left + (tabRect.width - width) / 2);
+
+    underline.style.width = `${width}px`;
+    underline.style.transform = `translateX(${x}px)`;
   }
 
   connectedCallback() {
@@ -303,6 +338,7 @@ class Statusbar extends Component {
       this.createTabs();
       this.setEvents();
       this.openLastVisitedTab();
+      window.addEventListener("resize", () => this.updateTabUnderline(), { passive: true });
     });
   }
 }

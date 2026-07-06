@@ -184,7 +184,7 @@ class Tabs extends Component {
       .panel-shader::before {
           content: "";
           position: absolute;
-          inset: 92px;
+          inset: 95.5px;
           z-index: 2;
           pointer-events: none;
           border-radius: 28px;
