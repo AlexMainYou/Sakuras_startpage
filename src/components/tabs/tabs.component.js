@@ -152,42 +152,52 @@ class Tabs extends Component {
 
       #panels {
           width: clamp(836px, calc(60vw + 76px), 976px);
-          height: clamp(306px, calc(60vh - 124px), 416px);
-          border-radius: 24px;
+          height: clamp(431px, calc(60vh + 1px), 541px);
+          border-radius: 28px;
           overflow: visible;
           isolation: isolate;
       }
 
       .panel-shader {
           position: absolute;
-          inset: -28px;
-          z-index: 0;
+          inset: -92px;
+          z-index: 2;
           overflow: hidden;
-          border-radius: 48px;
+          border-radius: 80px;
           background: transparent;
-          filter: saturate(1.18);
+          filter: saturate(1.25);
           mix-blend-mode: screen;
-          opacity: 0.88;
+          opacity: 1;
           pointer-events: none;
       }
 
       .panel-shader::after {
           content: "";
           position: absolute;
-          inset: 26px;
+          inset: 90px;
           z-index: 2;
           pointer-events: none;
-          border-radius: 26px;
+          border-radius: 30px;
           box-shadow: none;
+      }
+
+      .panel-shader::before {
+          content: "";
+          position: absolute;
+          inset: 92px;
+          z-index: 2;
+          pointer-events: none;
+          border-radius: 28px;
+          background: #000;
       }
 
       .panel-core {
           position: absolute;
-          inset: 0;
-          z-index: 1;
+          inset: 3.5px;
+          z-index: 3;
           overflow: hidden;
           border: 1px solid var(--card-border-fallback);
-          border-radius: 24px;
+          border-radius: 28px;
           background: var(--card-glass);
           box-shadow: none;
           backdrop-filter: none;
@@ -217,7 +227,7 @@ class Tabs extends Component {
           height: 100%;
           overflow: hidden;
           position: relative;
-          border-radius: 24px;
+          border-radius: 28px;
       }
 
       .tabs-container {

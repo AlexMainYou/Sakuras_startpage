@@ -50,7 +50,7 @@ class Statusbar extends Component {
 
       #tabs > cols {
           display: grid;
-          grid-template-columns: minmax(0, 1fr) auto;
+          grid-template-columns: minmax(0, 1fr) auto auto;
           align-items: center;
           height: 100%;
           gap: 12px;
@@ -124,6 +124,29 @@ class Statusbar extends Component {
           justify-content: flex-end;
           height: 100%;
           color: #fff;
+          transform: translateX(13px);
+      }
+
+      .brand-link {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          height: 36px;
+          padding: 0 8px;
+          border: 0;
+          background: transparent;
+          color: var(--text-primary);
+          font: 700 12px 'Roboto', sans-serif;
+          letter-spacing: 0;
+          cursor: pointer;
+          opacity: 0.86;
+          transition: opacity .2s ease, color .2s ease, transform .2s ease;
+      }
+
+      .brand-link:hover {
+          color: var(--active-tab-indicator);
+          opacity: 1;
+          transform: translateY(-1px);
       }
 
       .widget {
@@ -157,6 +180,11 @@ class Statusbar extends Component {
               min-width: 58px;
               padding: 0 12px;
           }
+
+          .brand-link {
+              padding: 0 4px;
+              font-size: 11px;
+          }
       }
     `;
   }
@@ -166,6 +194,7 @@ class Statusbar extends Component {
         <div id="tabs">
             <cols>
                 <ul class="- indicator"></ul>
+                <button class="brand-link" type="button">SAKURAST</button>
                 <div class="+ widgets col-end">
                     <weather-forecast class="+ widget weather"></weather-forecast>
                 </div>

@@ -32,6 +32,8 @@ const shaderSettings = {
   marginBottom: 0,
 };
 
+const panelShaderInset = 92;
+
 let shaderNoiseTexture = null;
 let shaderNoiseTexturePromise = null;
 
@@ -175,6 +177,15 @@ function mountShader(element, overrides = {}) {
   return element.paperShaderMount;
 }
 
+function getInsetMargins(element, inset) {
+  return {
+    marginLeft: inset / Math.max(element.clientWidth, 1),
+    marginRight: inset / Math.max(element.clientWidth, 1),
+    marginTop: inset / Math.max(element.clientHeight, 1),
+    marginBottom: inset / Math.max(element.clientHeight, 1),
+  };
+}
+
 function findShaderTargets() {
   const tabs = document.querySelector("tabs-list");
   const root = tabs?.shadowRoot;
@@ -221,6 +232,7 @@ async function initPaperShaders(tries = 0) {
     smoke: 0.38,
     smokeSize: 0.5,
     bloom: 0.06,
+    ...getInsetMargins(targets.panel, panelShaderInset),
   });
 
   const updateScale = () => {
@@ -234,6 +246,7 @@ async function initPaperShaders(tries = 0) {
       smoke: 0.38,
       smokeSize: 0.5,
       bloom: 0.06,
+      ...getInsetMargins(targets.panel, panelShaderInset),
     }));
   };
 
