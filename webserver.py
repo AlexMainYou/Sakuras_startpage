@@ -11,7 +11,7 @@ script_path = os.path.dirname(os.path.abspath(__file__))
 os.chdir(script_path)
 
 HOST = "127.0.0.1"
-PORT = 1111
+PORT = int(os.environ.get("STARTPAGE_PORT") or (sys.argv[1] if len(sys.argv) > 1 else 1111))
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
