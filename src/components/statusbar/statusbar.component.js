@@ -5,6 +5,7 @@ class Statusbar extends Component {
     categories: ".categories ul",
     tabs: "#tabs ul li",
     indicator: ".indicator",
+    brandLink: ".brand-link",
   };
 
   currentTabIndex = 0;
@@ -216,6 +217,7 @@ class Statusbar extends Component {
 
   setEvents() {
     this.refs.indicator.addEventListener("click", ({ target }) => this.handleTabChange(target));
+    this.refs.brandLink.addEventListener("click", () => this.openPrivateButton());
 
     document.onkeydown = (e) => this.handleKeyPress(e);
     document.onwheel = (e) => this.handleWheelScroll(e);
@@ -223,6 +225,12 @@ class Statusbar extends Component {
     if (CONFIG.openLastVisitedTab) {
       window.onbeforeunload = () => this.saveCurrentTab();
     }
+  }
+
+  openPrivateButton() {
+    const url = window.LOCAL_CONFIG?.privateButton?.url;
+
+    if (url) window.location.href = url;
   }
 
   saveCurrentTab() {
