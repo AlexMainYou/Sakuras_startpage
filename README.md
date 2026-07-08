@@ -1,4 +1,7 @@
+
 # Sakuras Startpage
+
+<img width="1916" height="994" alt="firefox_tGBuEVgEGW" src="https://github.com/user-attachments/assets/543b1805-10e0-42eb-829a-9245e23e000d" />
 
 Персональная стартовая страница для браузера: одна центральная карточка с тремя вкладками сервисов, поиском, температурой и светящейся обводкой на базе Paper Design Shaders.
 
